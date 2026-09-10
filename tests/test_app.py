@@ -4,15 +4,14 @@ from app import app
 client = TestClient(app)
 
 def test_health_endpoint():
-    """Test 1: Health Endpoint validation"""
+    """Test 1: Health Endpoint validation for v1.1.0 metadata"""
     response = client.get("/health")
     assert response.status_code == 200
     data = response.json()
     assert data["status"] == "healthy"
     assert data["application"] == "student-ml-api"
-    assert "version" in data
-
-
+    assert data["application_version"] == "1.1.0"
+    assert data["model_version"] == "model-1"
 
 def test_predict_success():
     """Test 2: Successful /predict calculation"""
@@ -25,7 +24,7 @@ def test_predict_success():
 def test_predict_missing_input():
     """Test 3: Missing input validation failure"""
     response = client.post("/predict", json={})
-    assert response.status_code == 422  # FastAPI validation error status code
+    assert response.status_code == 422
 
 def test_predict_invalid_input():
     """Test 4: Invalid input type validation failure"""
