@@ -4,13 +4,14 @@ from app import app
 client = TestClient(app)
 
 def test_health_endpoint():
-    """Test 1: Health Endpoint validation (Deliberate Failure Demo)"""
+    """Test 1: Health Endpoint validation"""
     response = client.get("/health")
     assert response.status_code == 200
     data = response.json()
-    assert data["status"] == "wrong"  # Intentional breaking change for CI failure demonstration
+    assert data["status"] == "healthy"
     assert data["application"] == "student-ml-api"
     assert "version" in data
+
 
 
 def test_predict_success():
