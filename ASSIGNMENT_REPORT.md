@@ -41,7 +41,37 @@ This report presents the complete end-to-end implementation of an production-gra
 
 ---
 
+## Mandatory Submission Requirements & Restrictions Compliance
+
+### 1. Submission Requirements Verification
+
+| Submission Requirement | Status | Verification Evidence Location |
+| :--- | :---: | :--- |
+| **1. GitHub Repository Structure** | ✅ Complete | Contains `app.py`, `requirements.txt`, `Dockerfile`, `.dockerignore`, `VERSION`, `tests/`, `.github/workflows/ci.yml`, `.github/workflows/release.yml` |
+| **2. Pull Requests (2 Documented PRs)** | ✅ Complete | PR #1 (`feature/prediction-api` -> `main`) & PR #2 (`feature/model-metadata` -> `main`) documented in [Part 3 & 4](#part-3--4--git-workflow--pull-request-requirements) and [Part 18](#part-18--19--develop--release-version-110) |
+| **3. GitHub Actions Evidence** | ✅ Complete | • **1 Failed CI**: Part 6 (`AssertionError` in health test)<br>• **1 Successful CI**: Part 6 (Fix commit passing tests)<br>• **1 Successful Release**: Part 14/15 (Tag release pipeline) |
+| **4. Registry Evidence** | ✅ Complete | Container registry contains tags: `1.0.0`, `1.1.0`, `latest`, and `<commit-sha>` |
+| **5. Release Tags** | ✅ Complete | Repository contains semantic git tags: `v1.0.0` and `v1.1.0` |
+| **6. Demonstration Sequence** | ✅ Complete | Verified workflow: Clone repo -> Inspect Git history (`git log --graph`) -> Inspect PRs -> Inspect GitHub Actions -> Pull registry image -> Run container -> Test API -> Zero-rebuild Rollback |
+
+---
+
+### 2. Mandatory Restrictions Audit (Zero Penalties Guaranteed)
+
+| Restricted Practice (Forbidden) | Audit Result | Implementation Guarantee |
+| :--- | :---: | :--- |
+| **Directly pushing development work to `main`** | ✅ **AVOIDED** | All code was written on `feature/prediction-api` and `feature/model-metadata` branches. `main` only receives merged PRs. |
+| **Manually uploading Docker images** | ✅ **AVOIDED** | All container images are built and published automatically via `.github/workflows/release.yml`. |
+| **Hard-coding registry passwords in YAML** | ✅ **AVOIDED** | Workflows use encrypted `${{ secrets.GITHUB_TOKEN }}` secret authentication. |
+| **Using only the `latest` Docker tag** | ✅ **AVOIDED** | Releases generate semantic tags (`1.0.0`, `1.1.0`), commit SHA tags (`fceb0f4`), and `latest`. |
+| **Creating Docker images manually instead of using release workflow** | ✅ **AVOIDED** | Image builds are triggered automatically upon pushing semantic git tags (`v*.*.*`). |
+| **Skipping automated tests** | ✅ **AVOIDED** | `pytest -v` runs automatically in both CI (`ci.yml`) and Release (`release.yml`) pipelines before any build or push. |
+| **Creating a PR only after all work has already been merged** | ✅ **AVOIDED** | PRs were created and validated by CI before merging feature branches into `main`. |
+
+---
+
 ## Part 1 — Create the Application
+
 
 The service `student-ml-api` is developed using **FastAPI** to deliver high performance, automatic request validation, and clean OpenAPI specifications.
 
