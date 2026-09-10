@@ -5,7 +5,7 @@ from pydantic import BaseModel
 app = FastAPI(
     title="student-ml-api",
     description="ML Inference API for MLOps Assignment",
-    version="1.0.0"
+    version="1.1.0"
 )
 
 def read_version():
@@ -13,7 +13,7 @@ def read_version():
     if os.path.exists(version_path):
         with open(version_path, "r", encoding="utf-8") as f:
             return f.read().strip()
-    return "1.0.0"
+    return "1.1.0"
 
 class PredictRequest(BaseModel):
     value: float
@@ -27,7 +27,8 @@ def health():
     return {
         "status": "healthy",
         "application": "student-ml-api",
-        "version": read_version()
+        "application_version": read_version(),
+        "model_version": "model-1"
     }
 
 @app.post("/predict", response_model=PredictResponse)
